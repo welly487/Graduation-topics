@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT 問答平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">GPT 問答平台</h1>
+
+        <!-- 身份選擇下拉選單 -->
+        <div class="dropdown mb-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                請選取你的身份
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">一般人</a></li>
+                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">小學生</a></li>
+                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國中生</a></li>
+            </ul>
+        </div>
+
+        <!-- 問題輸入區域 -->
+        <div class="mb-3">
+            <label for="userInput" class="form-label">輸入您的問題：</label>
+            <textarea class="form-control" id="userInput" rows="4" placeholder="輸入問題..."></textarea>
+        </div>
+
+        <!-- 提交按鈕 -->
+        <button id="submitBtn" class="btn btn-primary">提交</button>
+
+        <!-- 回應顯示區域 -->
+        <div class="mt-4">
+            <h3>回應：</h3>
+            <p id="responseText" class="border rounded p-3 bg-light">請輸入問題後點擊提交。</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedRole = '一般人';  // 預設身份
+
+        // 設定選擇的身份
+        function selectRole(element) {
+            selectedRole = element.innerText;
+            document.getElementById('dropdownMenuButton1').innerText = selectedRole;
+        }
+
+        // 提交問題並傳送身份資訊
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const userInput = document.getElementById('userInput').value.trim();
+            const responseText = document.getElementById('responseText');
+
+            if (!userInput) {
+                alert('請輸入問題！');
+                return;
+            }
+
+            responseText.innerText = "正在處理...";
+
+            try {
+                const response = await fetch('/api/gpt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        prompt: userInput, 
+                        role: selectedRole 
+                    }),
+                });
+
+                const data = await response.json();
+                responseText.innerText = data.reply || "無法獲得回應。";
+            } catch (error) {
+                responseText.innerText = "出現錯誤，請稍後再試。";
+            }
+        });
+    </script>
+</body>
+</html>
