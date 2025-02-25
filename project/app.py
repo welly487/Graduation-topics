@@ -5,7 +5,7 @@ import google.generativeai as genai
 app = Flask(__name__)
 CORS(app)  # 啟用 CORS
 
-# 設定 API Key
+# 設定 API Key(使用環境變數)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # 初始化 Gemini 模型
