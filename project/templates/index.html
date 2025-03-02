@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Meta元博士</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <div class="container my-5">
@@ -12,7 +22,7 @@
 
         <!-- 身份選擇下拉選單 -->
         <div class="dropdown mb-3">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 請選取你的身份
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -25,6 +35,9 @@
             </ul>
         </div>
 
+        <!-- 顯示選擇的身份 -->
+        <p><strong>當前身份：</strong> <span id="currentRole">一般人</span></p>
+
         <!-- 問題輸入區域 -->
         <div class="mb-3">
             <label for="userInput" class="form-label">輸入您的問題：</label>
@@ -32,7 +45,7 @@
         </div>
 
         <!-- 提交按鈕 -->
-        <button id="submitBtn" class="btn btn-primary">提交</button>
+        <button id="submitBtn" class="btn btn-success">提交</button>
 
         <!-- 回應顯示區域 -->
         <div class="mt-4">
@@ -43,25 +56,30 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let selectedRole = '一般人';  // 預設身份
+        let selectedRole = '一般人';
 
         // 設定選擇的身份
         function selectRole(element) {
             selectedRole = element.innerText;
             document.getElementById('dropdownMenuButton1').innerText = selectedRole;
+            document.getElementById('currentRole').innerText = selectedRole;
         }
 
         // 提交問題並傳送身份資訊
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const userInput = document.getElementById('userInput').value.trim();
             const responseText = document.getElementById('responseText');
+            const submitBtn = document.getElementById('submitBtn');
 
-            if (!userInput) {
+            if (!userInput || userInput.replace(/\s/g, '') === '') {
                 alert('請輸入問題！');
                 return;
             }
 
+            // 禁用按鈕避免重複提交
+            submitBtn.disabled = true;
             responseText.innerText = "正在處理...";
+            responseText.classList.remove("fade-in");
 
             try {
                 const response = await fetch('/api/gpt', {
@@ -77,8 +95,11 @@
 
                 const data = await response.json();
                 responseText.innerText = data.reply || "無法獲得回應。";
+                responseText.classList.add("fade-in");
             } catch (error) {
                 responseText.innerText = "出現錯誤，請稍後再試。";
+            } finally {
+                submitBtn.disabled = false; // 回復按鈕可點擊狀態
             }
         });
     </script>
