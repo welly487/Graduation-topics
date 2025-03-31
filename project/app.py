@@ -6,8 +6,7 @@ import google.generativeai as genai
 import openai
 import requests
 
-# 加載環境變數
-load_dotenv()
+
 
 app = Flask(__name__)
 CORS(app)
