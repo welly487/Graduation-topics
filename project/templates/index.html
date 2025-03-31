@@ -20,12 +20,12 @@
     <div class="container my-5">
         <h1 class="text-center mb-4">Dr. Meta元博士</h1>
 
-        <!-- 身份選擇下拉選單 -->
+        <!-- 身份選擇 -->
         <div class="dropdown mb-3">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown">
                 請選取你的身份
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#" onclick="selectRole(this)">一般人</a></li>
                 <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國小低年級</a></li>
                 <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國小中年級</a></li>
@@ -34,11 +34,9 @@
                 <li><a class="dropdown-item" href="#" onclick="selectRole(this)">高中生</a></li>
             </ul>
         </div>
-
-        <!-- 顯示選擇的身份 -->
         <p><strong>當前身份：</strong> <span id="currentRole">一般人</span></p>
 
-        <!-- 問題輸入區域 -->
+        <!-- 問題輸入 -->
         <div class="mb-3">
             <label for="userInput" class="form-label">輸入您的問題：</label>
             <textarea class="form-control" id="userInput" rows="4" placeholder="輸入問題..."></textarea>
@@ -50,7 +48,16 @@
         <!-- 回應顯示區域 -->
         <div class="mt-4">
             <h3>回應：</h3>
-            <div id="responseText" class="border rounded p-4 bg-light" style="min-height: 200px; font-size: 1.1rem; line-height: 1.6;"></div>
+            <div class="border rounded p-4 bg-light" style="min-height: 200px;">
+                <h4>🔹 Gemini 回應：</h4>
+                <div id="responseGemini" class="border rounded p-3 bg-white mb-3"></div>
+                
+                <h4>🔹 ChatGPT 回應：</h4>
+                <div id="responseChatGPT" class="border rounded p-3 bg-white mb-3"></div>
+
+                <h4>🔹 Deepseek 回應：</h4>
+                <div id="responseDeepseek" class="border rounded p-3 bg-white"></div>
+            </div>
         </div>
     </div>
 
@@ -58,50 +65,74 @@
     <script>
         let selectedRole = '一般人';
 
-        // 設定選擇的身份
         function selectRole(element) {
             selectedRole = element.innerText;
             document.getElementById('dropdownMenuButton1').innerText = selectedRole;
             document.getElementById('currentRole').innerText = selectedRole;
         }
 
-        // 提交問題並傳送身份資訊
         document.getElementById('submitBtn').addEventListener('click', async () => {
             const userInput = document.getElementById('userInput').value.trim();
-            const responseText = document.getElementById('responseText');
+            const responseGemini = document.getElementById('responseGemini');
+            const responseChatGPT = document.getElementById('responseChatGPT');
+            const responseDeepseek = document.getElementById('responseDeepseek');
             const submitBtn = document.getElementById('submitBtn');
 
-            if (!userInput || userInput.replace(/\s/g, '') === '') {
+            if (!userInput) {
                 alert('請輸入問題！');
                 return;
             }
 
-            // 禁用按鈕避免重複提交
             submitBtn.disabled = true;
-            responseText.innerText = "正在處理...";
-            responseText.classList.remove("fade-in");
+            responseGemini.innerText = "🔄 Gemini 回應中...";
+            responseChatGPT.innerText = "🔄 ChatGPT 回應中...";
+            responseDeepseek.innerText = "🔄 Deepseek 回應中...";
 
             try {
-                const response = await fetch('/api/gpt', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        prompt: userInput, 
-                        role: selectedRole 
-                    }),
-                });
+                const [geminiResponse, chatGPTResponse, DeepseekResponse] = await Promise.all([
+                    fetch('/api/ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: userInput,
+                            role: selectedRole,
+                            model: 'gemini'
+                        }),
+                    }).then(res => res.json()),
 
-                const data = await response.json();
-                responseText.innerText = data.reply || "無法獲得回應。";
-                responseText.classList.add("fade-in");
+                    fetch('/api/ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: userInput,
+                            role: selectedRole,
+                            model: 'chatgpt'
+                        }),
+                    }).then(res => res.json()),
+
+                    fetch('/api/ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: userInput,
+                            role: selectedRole,
+                            model: 'deepseek'
+                        }),
+                    }).then(res => res.json())
+                ]);
+
+                responseGemini.innerText = geminiResponse.reply || "❌ 無法獲得回應。";
+                responseChatGPT.innerText = chatGPTResponse.reply || "❌ 無法獲得回應。";
+                responseDeepseek.innerText = DeepseekResponse.reply || "❌ 無法獲得回應。";
+
             } catch (error) {
-                responseText.innerText = "出現錯誤，請稍後再試。";
+                responseGemini.innerText = "❌ 出現錯誤，請稍後再試。";
+                responseChatGPT.innerText = "❌ 出現錯誤，請稍後再試。";
+                responseDeepseek.innerText = "❌ 出現錯誤，請稍後再試。";
             } finally {
-                submitBtn.disabled = false; // 回復按鈕可點擊狀態
+                submitBtn.disabled = false;
             }
         });
     </script>
-</body>
+</body> 
 </html>
