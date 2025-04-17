@@ -55,8 +55,8 @@
                 <h4>🔹 ChatGPT 回應：</h4>
                 <div id="responseChatGPT" class="border rounded p-3 bg-white mb-3"></div>
 
-                <h4>🔹 Deepseek 回應：</h4>
-                <div id="responseDeepseek" class="border rounded p-3 bg-white"></div>
+                <h4>🔹 Grok 回應：</h4>
+                <div id="responseGrok" class="border rounded p-3 bg-white"></div>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
             const userInput = document.getElementById('userInput').value.trim();
             const responseGemini = document.getElementById('responseGemini');
             const responseChatGPT = document.getElementById('responseChatGPT');
-            const responseDeepseek = document.getElementById('responseDeepseek');
+            const responseGrok = document.getElementById('responseGrok');
             const submitBtn = document.getElementById('submitBtn');
 
             if (!userInput) {
@@ -86,10 +86,10 @@
             submitBtn.disabled = true;
             responseGemini.innerText = "🔄 Gemini 回應中...";
             responseChatGPT.innerText = "🔄 ChatGPT 回應中...";
-            responseDeepseek.innerText = "🔄 Deepseek 回應中...";
+            responseGrok.innerText = "🔄 Grok 回應中...";
 
             try {
-                const [geminiResponse, chatGPTResponse, DeepseekResponse] = await Promise.all([
+                const [geminiResponse, chatGPTResponse, GrokResponse] = await Promise.all([
                     fetch('/api/ai', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -116,19 +116,19 @@
                         body: JSON.stringify({
                             prompt: userInput,
                             role: selectedRole,
-                            model: 'deepseek'
+                            model: 'grok'
                         }),
                     }).then(res => res.json())
                 ]);
 
                 responseGemini.innerText = geminiResponse.reply || "❌ 無法獲得回應。";
                 responseChatGPT.innerText = chatGPTResponse.reply || "❌ 無法獲得回應。";
-                responseDeepseek.innerText = DeepseekResponse.reply || "❌ 無法獲得回應。";
+                responseGrok.innerText = GrokResponse.reply || "❌ 無法獲得回應。";
 
             } catch (error) {
                 responseGemini.innerText = "❌ 出現錯誤，請稍後再試。";
                 responseChatGPT.innerText = "❌ 出現錯誤，請稍後再試。";
-                responseDeepseek.innerText = "❌ 出現錯誤，請稍後再試。";
+                responseGrok.innerText = "❌ 出現錯誤，請稍後再試。";
             } finally {
                 submitBtn.disabled = false;
             }
