@@ -2,21 +2,21 @@ import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import google.generativeai as genai
-import openai
+from openai import OpenAI
 import requests
 
 app = Flask(__name__)
 CORS(app)
 
-# 從環境變數中讀取 API 金鑰
+# API 金鑰
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+GROK_API_KEY = os.getenv('GROK_API_KEY')
 
 # 初始化 Gemini 和 OpenAI 客戶端
 genai.configure(api_key=GEMINI_API_KEY)
-openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
 gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 @app.route('/')
 def home():
@@ -39,7 +39,7 @@ def ai_response():
         "國小高年級": f"請用國小高年級都看得懂的回答：{prompt}",
         "國中生": f"請用適合國中程度的方式回答：{prompt}",
         "高中生": f"請用適合高中程度的方式回答：{prompt}",
-        "一般人": f"一般的回答：{prompt}"
+        "一般人": f"{prompt}"
     }
     final_prompt = role_prompts.get(role, prompt)
 
@@ -51,24 +51,27 @@ def ai_response():
         elif model == 'chatgpt':
             response = openai_client.chat.completions.create(
                 model="gpt-3.5-turbo",
-                messages=[{"role": "system", "content": final_prompt}]
+                messages=[
+                    {"role": "system", "content": "你是一個有幫助的AI助理"},
+                    {"role": "user", "content": final_prompt}
+                ]
             )
             reply = response.choices[0].message.content
 
-        elif model == 'deepseek':
-            headers = {"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"}
+        elif model == 'grok':
+            headers = {"Authorization": f"Bearer {GROK_API_KEY}", "Content-Type": "application/json"}
             payload = {
-                "model": "deepseek-chat",  # DeepSeek Chat 模型名稱
+                "model": "grok-2",  # 根據官方更新模型名
                 "messages": [{"role": "user", "content": final_prompt}],
                 "temperature": 0.7
             }
-            deepseek_response = requests.post("https://api.deepseek.com/v1/chat/completions", json=payload, headers=headers)
-            deepseek_response.raise_for_status()
-            reply = deepseek_response.json()["choices"][0]["message"]["content"]
+            grok_response = requests.post("https://api.x.ai/v1/chat/completions", json=payload, headers=headers)
+            grok_response.raise_for_status()
+            reply = grok_response.json()["choices"][0]["message"]["content"]
 
         else:
             reply = "❌ 未知的 AI 模型"
-        
+
         return jsonify({'reply': reply})
 
     except requests.exceptions.RequestException as e:
@@ -76,6 +79,8 @@ def ai_response():
     except Exception as e:
         return jsonify({'reply': f'伺服器錯誤：{str(e)}'}), 500
 
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
