@@ -5,117 +5,337 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Meta元博士</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+    :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #4895ef;
+            --gemini-color: #4361ee;
+            --chatgpt-color: #10b981;
+            --grok-color: #7209b7;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+            padding-bottom: 2rem;
+        }
+
+        .card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: none;
+            overflow: auto;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 30px 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .hero-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.8rem;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #3db8df;
+            border-color: #3db8df;
+            transform: translateY(-2px);
+        }
+
+        .dropdown-menu {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f4ff;
+        }
+
+        .role-badge {
+            background-color: var(--info-color);
+            color: white;
+            border-radius: 20px;
+            padding: 0.3rem 1rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .response-card {
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .response-header {
+            padding: 1rem;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gemini-header {
+            background-color: var(--gemini-color);
+        }
+
+        .chatgpt-header {
+            background-color: var(--chatgpt-color);
+        }
+
+        .grok-header {
+            background-color: var(--grok-color);
+        }
+
+        .response-body {
+            padding: 1rem;
+            background-color: white;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
         .fade-in {
             opacity: 0;
             animation: fadeIn 0.5s ease-in forwards;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .response-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            padding: 8px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            margin-bottom: 10px;
+
+        .loading {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
         }
-        .response-body {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            overflow: hidden;
-            opacity: 1;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        .collapsed {
-            max-height: 0;
-            opacity: 0;
-            margin-bottom: 0;
+
+        .input-container {
+            position: relative;
         }
-        .expanded {
-            max-height: 1000px;
-            opacity: 1;
-            margin-bottom: 15px;
+
+        .char-counter {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
         }
-        .toggle-icon {
+
+        .model-icon {
+            margin-right: 0.5rem;
             font-size: 1.2rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .response-header {
+                padding: 0.8rem;
+            }
+
+            .response-body {
+                padding: 0.8rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container my-5">
-        <h1 class="text-center mb-4">Dr. Meta元博士</h1>
-
-        <!-- 身份選擇 -->
-        <div class="dropdown mb-3">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown">
-                請選取你的身份
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">一般人</a></li>
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國小低年級</a></li>
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國小中年級</a></li>
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國小高年級</a></li>
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">國中生</a></li>
-                <li><a class="dropdown-item" href="#" onclick="selectRole(this)">高中生</a></li>
-            </ul>
+    <!-- 顶部横幅 -->
+    <div class="hero-section">
+        <div class="container">
+            <h1 class="hero-title text-center">Dr. Meta元博士</h1>
+            <p class="hero-subtitle text-center">比較各大AI語言模型的回應</p>
         </div>
-        <p><strong>當前身份：</strong> <span id="currentRole">一般人</span></p>
+    </div>
 
-        <!-- 問題輸入 -->
-        <div class="mb-3">
-            <label for="userInput" class="form-label">輸入您的問題：</label>
-            <textarea class="form-control" id="userInput" rows="4" placeholder="輸入問題..."></textarea>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!-- 身份選擇 -->
+                        <h5 class="card-title mb-3"><i class="fas fa-user-circle me-2"></i>用戶設定</h5>
+                        <div class="mb-3">
+                            <label class="form-label">選擇您的身份：</label>
+                            <div class="dropdown w-100">
+                                <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-tag me-2"></i>請選取你的身份
+                                </button>
+                                <ul class="dropdown-menu w-100">
+                                    <li><a class="dropdown-item" href="#" onclick="selectRole(this)"><i class="fas fa-user me-2"></i>一般人</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectRole(this)"><i class="fas fa-child me-2"></i>國小生</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectRole(this)"><i class="fas fa-school me-2"></i>國中生</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="selectRole(this)"><i class="fas fa-graduation-cap me-2"></i>高中生</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <span class="form-label">當前身份：</span>
+                            <span class="role-badge" id="currentRole">一般人</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <!-- 問題輸入 -->
+                        <h5 class="card-title mb-3"><i class="fas fa-question-circle me-2"></i>提問區域</h5>
+                        <div class="mb-3 input-container">
+                            <label for="userInput" class="form-label">輸入您的問題：</label>
+                            <textarea class="form-control" id="userInput" rows="4" placeholder="請輸入您想問的問題..." maxlength="500" oninput="updateCharCount()"></textarea>
+                            <div class="char-counter"><span id="charCount">0</span>/500</div>
+                        </div>
+
+                        <!-- 提交按鈕 -->
+                        <button id="submitBtn" class="btn btn-success w-100">
+                            <i class="fas fa-paper-plane me-2"></i>提交問題
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- 提交按鈕 -->
-        <button id="submitBtn" class="btn btn-success">提交</button>
 
         <!-- 回應顯示區域 -->
-        <div class="mt-4">
-            <h3>回應：</h3>
-            <div class="border rounded p-4 bg-light" style="min-height: 200px;">
-                
-                <!-- Gemini 回應區塊 -->
-                <div class="response-section mb-3">
-                    <div class="response-header" onclick="toggleResponse('gemini')">
-                        <h4>🔹 Gemini 回應：</h4>
-                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleGemini">
-                            <i class="bi bi-chevron-down toggle-icon" id="geminiIcon"></i>
+        <div class="row mt-2">
+            <div class="col-12">
+                <h4 class="mb-3"><i class="fas fa-robot me-2"></i>AI模型回應</h4>
+
+                <!-- Gemini 回應 -->
+                <div class="response-card fade-in" style="animation-delay: 0.1s">
+                    <div class="response-header gemini-header">
+                        <div>
+                            <i class="fas fa-atom model-icon"></i>Gemini 回應
+                        </div>
+                        <button class="btn btn-sm btn-light toggle-btn d-none" onclick="toggleResponse('responseGemini')">
+                            <i class="fas fa-chevron-down"></i> <!-- 向下箭頭 -->
                         </button>
+                        <div id="geminiLoading" class="d-none">
+                            <div class="loading"></div>
+                        </div>
                     </div>
-                    <div id="geminiContainer" class="response-body collapsed">
-                        <div id="responseGemini" class="border rounded p-3 bg-white"></div>
-                    </div>
-                </div>
-                
-                <!-- ChatGPT 回應區塊 -->
-                <div class="response-section mb-3">
-                    <div class="response-header" onclick="toggleResponse('chatgpt')">
-                        <h4>🔹 ChatGPT 回應：</h4>
-                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleChatGPT">
-                            <i class="bi bi-chevron-down toggle-icon" id="chatgptIcon"></i>
-                        </button>
-                    </div>
-                    <div id="chatgptContainer" class="response-body collapsed">
-                        <div id="responseChatGPT" class="border rounded p-3 bg-white"></div>
-                    </div>
+                    <div id="responseGemini" class="response-body"></div>
                 </div>
 
-                <!-- Grok 回應區塊 -->
-                <div class="response-section">
-                    <div class="response-header" onclick="toggleResponse('grok')">
-                        <h4>🔹 Grok 回應：</h4>
-                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleGrok">
-                            <i class="bi bi-chevron-down toggle-icon" id="grokIcon"></i>
+                <!-- ChatGPT 回應 -->
+                <div class="response-card fade-in" style="animation-delay: 0.2s">
+                    <div class="response-header chatgpt-header">
+                        <div>
+                            <i class="fas fa-brain model-icon"></i>ChatGPT 回應
+                        </div>
+                        <button class="btn btn-sm btn-light toggle-btn d-none" onclick="toggleResponse('responseChatGPT')">
+                            <i class="fas fa-chevron-down"></i> <!-- 向下箭頭 -->
                         </button>
+                        <div id="chatgptLoading" class="d-none">
+                            <div class="loading"></div>
+                        </div>
                     </div>
-                    <div id="grokContainer" class="response-body collapsed">
-                        <div id="responseGrok" class="border rounded p-3 bg-white"></div>
+                    <div id="responseChatGPT" class="response-body"></div>
+                </div>
+
+                <!-- Grok 回應 -->
+                <div class="response-card fade-in" style="animation-delay: 0.3s">
+                    <div class="response-header grok-header">
+                        <div>
+                            <i class="fas fa-wind model-icon"></i>Grok 回應
+                        </div>
+                        <button class="btn btn-sm btn-light toggle-btn d-none" onclick="toggleResponse('responseGrok')">
+                            <i class="fas fa-chevron-down"></i> <!-- 向下箭頭 -->
+                        </button>
+                        <div id="grokLoading" class="d-none">
+                            <div class="loading"></div>
+                        </div>
                     </div>
+                    <div id="responseGrok" class="response-body"></div>
                 </div>
             </div>
         </div>
@@ -126,39 +346,22 @@
         let selectedRole = '一般人';
 
         function selectRole(element) {
-            selectedRole = element.innerText;
-            document.getElementById('dropdownMenuButton1').innerText = selectedRole;
+            selectedRole = element.innerText.replace(/[^\u4e00-\u9fa5]/g, '').trim(); // 移除图标等字符，只保留中文
+            document.getElementById('dropdownMenuButton1').innerHTML = `<i class="fas fa-user-tag me-2"></i>${selectedRole}`;
             document.getElementById('currentRole').innerText = selectedRole;
         }
 
-        function toggleResponse(type) {
-            const container = document.getElementById(`${type}Container`);
-            const icon = document.getElementById(`${type}Icon`);
-            
-            if (container.classList.contains('expanded')) {
-                container.classList.remove('expanded');
-                container.classList.add('collapsed');
-                icon.classList.remove('bi-chevron-up');
-                icon.classList.add('bi-chevron-down');
-            } else {
-                container.classList.remove('collapsed');
-                container.classList.add('expanded');
-                icon.classList.remove('bi-chevron-down');
-                icon.classList.add('bi-chevron-up');
-            }
-        }
+        function updateCharCount() {
+            const input = document.getElementById('userInput');
+            const counter = document.getElementById('charCount');
+            counter.textContent = input.value.length;
 
-        function expandAllResponses() {
-            const containers = ['gemini', 'chatgpt', 'grok'];
-            containers.forEach(type => {
-                const container = document.getElementById(`${type}Container`);
-                const icon = document.getElementById(`${type}Icon`);
-                
-                container.classList.remove('collapsed');
-                container.classList.add('expanded');
-                icon.classList.remove('bi-chevron-down');
-                icon.classList.add('bi-chevron-up');
-            });
+            // 添加视觉反馈
+            if (input.value.length > 400) {
+                counter.style.color = '#f72585';
+            } else {
+                counter.style.color = '#6c757d';
+            }
         }
 
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -168,18 +371,35 @@
             const responseGrok = document.getElementById('responseGrok');
             const submitBtn = document.getElementById('submitBtn');
 
+            const geminiLoading = document.getElementById('geminiLoading');
+            const chatgptLoading = document.getElementById('chatgptLoading');
+            const grokLoading = document.getElementById('grokLoading');
+
             if (!userInput) {
-                alert('請輸入問題！');
+                // 使用更现代的提示方式
+                const userInputElement = document.getElementById('userInput');
+                userInputElement.classList.add('is-invalid');
+                userInputElement.focus();
+
+                // 3秒后移除错误样式
+                setTimeout(() => {
+                    userInputElement.classList.remove('is-invalid');
+                }, 3000);
                 return;
             }
 
+            // 更新按钮状态和加载指示器
             submitBtn.disabled = true;
-            responseGemini.innerText = "🔄 Gemini 回應中...";
-            responseChatGPT.innerText = "🔄 ChatGPT 回應中...";
-            responseGrok.innerText = "🔄 Grok 回應中...";
-            
-            // 展開所有回應區塊
-            expandAllResponses();
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>處理中...';
+
+            // 显示加载动画
+            responseGemini.innerHTML = "";
+            responseChatGPT.innerHTML = "";
+            responseGrok.innerHTML = "";
+
+            geminiLoading.classList.remove('d-none');
+            chatgptLoading.classList.remove('d-none');
+            grokLoading.classList.remove('d-none');
 
             try {
                 const [geminiResponse, chatGPTResponse, GrokResponse] = await Promise.all([
@@ -214,18 +434,61 @@
                     }).then(res => res.json())
                 ]);
 
-                responseGemini.innerText = geminiResponse.reply || "❌ 無法獲得回應。";
-                responseChatGPT.innerText = chatGPTResponse.reply || "❌ 無法獲得回應。";
-                responseGrok.innerText = GrokResponse.reply || "❌ 無法獲得回應。";
+                // 平滑过渡显示内容
+                setTimeout(() => {
+                    responseGemini.textContent = geminiResponse.reply || "❌ 無法獲得回應。";
+                    geminiLoading.classList.add('d-none');
+                    geminiLoading.previousElementSibling.classList.remove('d-none');
+                }, 500);
+
+                setTimeout(() => {
+                    responseChatGPT.textContent = chatGPTResponse.reply || "❌ 無法獲得回應。";
+                    chatgptLoading.classList.add('d-none');
+                    chatgptLoading.previousElementSibling.classList.remove('d-none');
+                }, 800);
+
+                setTimeout(() => {
+                    responseGrok.textContent = GrokResponse.reply || "❌ 無法獲得回應。";
+                    grokLoading.classList.add('d-none');
+                    grokLoading.previousElementSibling.classList.remove('d-none');
+                }, 1100);
 
             } catch (error) {
-                responseGemini.innerText = "❌ 出現錯誤，請稍後再試。";
-                responseChatGPT.innerText = "❌ 出現錯誤，請稍後再試。";
-                responseGrok.innerText = "❌ 出現錯誤，請稍後再試。";
+                geminiLoading.classList.add('d-none');
+                chatgptLoading.classList.add('d-none');
+                grokLoading.classList.add('d-none');
+
+                responseGemini.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>出現錯誤，請稍後再試。</div>';
+                responseChatGPT.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>出現錯誤，請稍後再試。</div>';
+                responseGrok.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>出現錯誤，請稍後再試。</div>';
             } finally {
-                submitBtn.disabled = false;
+                // 恢复按钮状态
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>提交問題';
+                }, 1200);
             }
         });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharCount();
+        });
+        //展開收回按鈕控制
+        function toggleResponse(responseId) {
+        const body = document.getElementById(responseId);
+        const button = body.previousElementSibling.querySelector('.toggle-btn');
+        const isHidden = body.classList.contains('d-none');
+
+        if (isHidden) {
+            body.classList.remove('d-none');
+            button.innerHTML = '<i class="fas fa-chevron-up"></i>'; // 向上箭頭
+        } else {
+            body.classList.add('d-none');
+            button.innerHTML = '<i class="fas fa-chevron-down"></i>'; // 向下箭頭
+        }
+        }
     </script>
-</body> 
+</body>
 </html>
+
