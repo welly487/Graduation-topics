@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Meta元博士</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         .fade-in {
             opacity: 0;
@@ -13,6 +14,34 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .response-body {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            overflow: hidden;
+            opacity: 1;
+        }
+        .collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+        .expanded {
+            max-height: 1000px;
+            opacity: 1;
+            margin-bottom: 15px;
+        }
+        .toggle-icon {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -49,14 +78,45 @@
         <div class="mt-4">
             <h3>回應：</h3>
             <div class="border rounded p-4 bg-light" style="min-height: 200px;">
-                <h4>🔹 Gemini 回應：</h4>
-                <div id="responseGemini" class="border rounded p-3 bg-white mb-3"></div>
                 
-                <h4>🔹 ChatGPT 回應：</h4>
-                <div id="responseChatGPT" class="border rounded p-3 bg-white mb-3"></div>
+                <!-- Gemini 回應區塊 -->
+                <div class="response-section mb-3">
+                    <div class="response-header" onclick="toggleResponse('gemini')">
+                        <h4>🔹 Gemini 回應：</h4>
+                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleGemini">
+                            <i class="bi bi-chevron-down toggle-icon" id="geminiIcon"></i>
+                        </button>
+                    </div>
+                    <div id="geminiContainer" class="response-body collapsed">
+                        <div id="responseGemini" class="border rounded p-3 bg-white"></div>
+                    </div>
+                </div>
+                
+                <!-- ChatGPT 回應區塊 -->
+                <div class="response-section mb-3">
+                    <div class="response-header" onclick="toggleResponse('chatgpt')">
+                        <h4>🔹 ChatGPT 回應：</h4>
+                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleChatGPT">
+                            <i class="bi bi-chevron-down toggle-icon" id="chatgptIcon"></i>
+                        </button>
+                    </div>
+                    <div id="chatgptContainer" class="response-body collapsed">
+                        <div id="responseChatGPT" class="border rounded p-3 bg-white"></div>
+                    </div>
+                </div>
 
-                <h4>🔹 Grok 回應：</h4>
-                <div id="responseGrok" class="border rounded p-3 bg-white"></div>
+                <!-- Grok 回應區塊 -->
+                <div class="response-section">
+                    <div class="response-header" onclick="toggleResponse('grok')">
+                        <h4>🔹 Grok 回應：</h4>
+                        <button class="btn btn-sm btn-outline-secondary toggle-btn" id="toggleGrok">
+                            <i class="bi bi-chevron-down toggle-icon" id="grokIcon"></i>
+                        </button>
+                    </div>
+                    <div id="grokContainer" class="response-body collapsed">
+                        <div id="responseGrok" class="border rounded p-3 bg-white"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -69,6 +129,36 @@
             selectedRole = element.innerText;
             document.getElementById('dropdownMenuButton1').innerText = selectedRole;
             document.getElementById('currentRole').innerText = selectedRole;
+        }
+
+        function toggleResponse(type) {
+            const container = document.getElementById(`${type}Container`);
+            const icon = document.getElementById(`${type}Icon`);
+            
+            if (container.classList.contains('expanded')) {
+                container.classList.remove('expanded');
+                container.classList.add('collapsed');
+                icon.classList.remove('bi-chevron-up');
+                icon.classList.add('bi-chevron-down');
+            } else {
+                container.classList.remove('collapsed');
+                container.classList.add('expanded');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            }
+        }
+
+        function expandAllResponses() {
+            const containers = ['gemini', 'chatgpt', 'grok'];
+            containers.forEach(type => {
+                const container = document.getElementById(`${type}Container`);
+                const icon = document.getElementById(`${type}Icon`);
+                
+                container.classList.remove('collapsed');
+                container.classList.add('expanded');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            });
         }
 
         document.getElementById('submitBtn').addEventListener('click', async () => {
@@ -87,6 +177,9 @@
             responseGemini.innerText = "🔄 Gemini 回應中...";
             responseChatGPT.innerText = "🔄 ChatGPT 回應中...";
             responseGrok.innerText = "🔄 Grok 回應中...";
+            
+            // 展開所有回應區塊
+            expandAllResponses();
 
             try {
                 const [geminiResponse, chatGPTResponse, GrokResponse] = await Promise.all([
