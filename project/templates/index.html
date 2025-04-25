@@ -388,6 +388,11 @@
                 return;
             }
 
+            
+           
+            //隱藏所有箭頭按鈕
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+            toggleButtons.forEach(button => button.classList.add('d-none')); 
             // 更新按钮状态和加载指示器
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>處理中...';
@@ -488,7 +493,7 @@
             button.innerHTML = '<i class="fas fa-chevron-down"></i>'; // 向下箭頭
         }
         }
+
     </script>
 </body>
 </html>
-
