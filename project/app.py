@@ -15,7 +15,7 @@ GROK_API_KEY = os.getenv('GROK_API_KEY')
 
 # 初始化 Gemini 和 OpenAI 客戶端
 genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+gemini_model = genai.GenerativeModel("gemini-2.0-flash")
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 @app.route('/')
