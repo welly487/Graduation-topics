@@ -1,0 +1,269 @@
+:root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --info-color: #4895ef;
+            --gemini-color: #4361ee;
+            --chatgpt-color: #10b981;
+            --grok-color: #7209b7;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark-color);
+            padding-bottom: 2rem;
+        }
+
+        .card {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: none;
+            overflow: auto;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 30px 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .hero-title {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.8rem;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #3db8df;
+            border-color: #3db8df;
+            transform: translateY(-2px);
+        }
+
+        .dropdown-menu {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 0.6rem 1rem;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f4ff;
+        }
+
+        .role-badge {
+            background-color: var(--info-color);
+            color: white;
+            border-radius: 20px;
+            padding: 0.3rem 1rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+       /* 確保 .response-card 是定位參照 */
+        .response-card {
+            position: relative;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        /* .response-header 標題行正常保持 */
+        .response-header {
+            padding: 1rem;
+            color: white;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+
+        .gemini-header {
+            background-color: var(--gemini-color);
+        }
+
+        .chatgpt-header {
+            background-color: var(--chatgpt-color);
+        }
+
+        .grok-header {
+            background-color: var(--grok-color);
+        }
+
+        .response-body {
+            padding: 1rem;
+            background-color: white;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: 0.5rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .model-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .response-header {
+                padding: 0.8rem;
+            }
+
+            .response-body {
+                padding: 0.8rem;
+            }
+        }
+
+       /* 工具列在標題下方，獨立一層 */
+        .response-toolbar {
+            padding: 0.5rem 1rem;
+            background-color: #f1f3f5;
+            display: flex;
+            justify-content: flex-end; /* 按鈕靠右對齊 */
+            gap: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* 工具列中的按鈕樣式 */
+        .response-toolbar .copy-btn {
+            font-size: 12px;
+            padding: 4px 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* 複製按鈕 hover 狀態 */
+        .response-toolbar .copy-btn:hover {
+            background-color: #e2e6ea;
+            border-color: #ddd;
+            color: #000;
+        }
+        /*複製狀態更新*/
+        .copy-button {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .copy-button.copied {
+            background-color: #4CAF50; /* 綠色背景顯示複製成功 */
+            color: white;
+        }
+
+        .copy-button.copied .fa-copy {
+            display: none; /* 隱藏複製圖標 */
+        }
+
+        .copy-button.copied .fa-check {
+            display: inline-block; /* 顯示勾勾圖標 */
+        }
+
+
+
+   
