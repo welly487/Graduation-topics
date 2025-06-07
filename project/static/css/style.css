@@ -436,3 +436,58 @@
         margin-bottom: 0.5rem;    /* 下方間距 */
         color: #ccc;              /* 圖標顏色 */
         }
+
+        .history-item {
+    position: relative;
+    cursor: pointer;
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px 50px 12px 12px; /* 右側留空間給刪除按鈕 */
+    transition: background-color 0.2s ease;
+}
+
+/* 各別刪除按鈕 */
+        .history-item {
+            position: relative;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+            padding: 12px 50px 12px 12px; /* 右側留空間給刪除按鈕 */
+            transition: background-color 0.2s ease;
+        }
+        
+        .history-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .delete-history-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #dc3545;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .history-item:hover .delete-history-btn {
+            opacity: 1;
+        }
+        
+        .delete-history-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .history-question {
+            font-weight: 500;
+            margin-bottom: 4px;
+            padding-right: 20px; /* 確保文字不會被刪除按鈕遮蓋 */
+        }
+        
+        .history-date {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
