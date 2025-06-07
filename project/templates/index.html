@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-   
 </head>
 <body>
     <!-- 顶部横幅 -->
@@ -375,42 +374,31 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
 
         // 儲存對話紀錄
         function saveChatHistory(question, responses) {
-            if (!question || question.trim() === '') return;
-            
-            // 檢查是否已存在相同問題
-            const existingIndex = chatHistory.findIndex(item => item.question === question);
-            
-            if (existingIndex !== -1) {
-                // 更新現有紀錄
-                chatHistory[existingIndex] = {
-                    question: question,
-                    timestamp: new Date().toISOString(),
-                    role: selectedRole,
-                    responses: responses
-                };
-            } else {
-                // 新增紀錄
-                chatHistory.unshift({
-                    question: question,
-                    timestamp: new Date().toISOString(),
-                    role: selectedRole,
-                    responses: responses
-                });
-                
-                // 限制最多保留20筆紀錄
-                if (chatHistory.length > 20) {
-                    chatHistory.pop();
-                }
-            }
-            
-            // 儲存到本地儲存空間
-            localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
-            
-            // 更新歷史紀錄列表
-            updateHistoryList();
-        }
+    if (!question || question.trim() === '') return;
 
-        // 更新歷史紀錄列表顯示
+    // 建立一筆新的歷史紀錄
+    const newEntry = {
+        id: Date.now() + Math.random(), // 新增：為每筆紀錄加上唯一ID
+        question: question,
+        timestamp: new Date().toISOString(),
+        role: selectedRole,
+        responses: responses
+    };
+
+    // 插入最新紀錄到開頭
+    chatHistory.unshift(newEntry);
+    // 限制最多保留 100 筆紀錄
+    if (chatHistory.length > 100) {
+        chatHistory = chatHistory.slice(0, 100); // 保留最新前 100 筆
+    }
+    // 儲存到本地儲存空間
+    localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+
+    // 更新歷史紀錄列表
+    updateHistoryList();
+}
+
+        // 更新歷史紀錄列表顯示 (修改版本)
         function updateHistoryList() {
             const historyList = document.getElementById('historyList');
             historyList.innerHTML = '';
@@ -423,21 +411,67 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
             // 按時間排序（最新的在最上面）
             chatHistory.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            chatHistory.forEach((record) => {
+            chatHistory.forEach((record, index) => {
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
+                
+                // 使用 index 作為更可靠的 ID
+                const recordId = record.id || record.timestamp || index;
+                
                 historyItem.innerHTML = `
                     <div class="history-question">${record.question}</div>
                     <div class="history-date">${formatDate(record.timestamp)} · ${record.role}</div>
+                    <button class="delete-history-btn" data-record-id="${recordId}" title="刪除此紀錄">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 `;
                 
+                // 為刪除按鈕添加事件監聽器
+                const deleteBtn = historyItem.querySelector('.delete-history-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 防止觸發父元素的點擊事件
+                    const recordId = e.currentTarget.getAttribute('data-record-id');
+                    deleteHistoryItem(recordId, index);
+                });
+                
                 // 點擊歷史紀錄項目時載入完整對話
-                historyItem.addEventListener('click', () => {
+                historyItem.addEventListener('click', (e) => {
+                    // 如果點擊的是刪除按鈕，不載入記錄
+                    if (e.target.closest('.delete-history-btn')) {
+                        return;
+                    }
                     loadHistoryRecord(record);
                 });
                 
                 historyList.appendChild(historyItem);
             });
+        }
+
+        // 刪除單一歷史紀錄的函數
+        function deleteHistoryItem(recordId, index) {
+            
+
+                // 使用索引刪除更可靠
+                if (typeof index !== 'undefined' && index >= 0 && index < chatHistory.length) {
+                    chatHistory.splice(index, 1);
+                } else {
+                    // 備用方案：使用 ID 過濾
+                    const originalLength = chatHistory.length;
+                    chatHistory = chatHistory.filter(record => {
+                        const currentId = record.id || record.timestamp;
+                        return String(currentId) !== String(recordId);
+                    });
+                    
+                }
+                
+                // 更新本地儲存
+                localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+                
+                // 重新顯示歷史紀錄列表
+                updateHistoryList();
+                
+                
+            
         }
 
         // 載入歷史紀錄
@@ -466,20 +500,21 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
 
         // 清除歷史紀錄
             document.getElementById('clearHistoryBtn').addEventListener('click', function() {
-                chatHistory = [];
-                localStorage.removeItem('aiChatHistory');
-                updateHistoryList();
+                    chatHistory = [];
+                    localStorage.removeItem('aiChatHistory');
+                    updateHistoryList();
 
-                // 改變按鈕文本為 "已清除"
-                const button = document.getElementById('clearHistoryBtn');
-                button.classList.add('cleared');
-                button.innerHTML = '<i class="fas fa-check"></i> 已清除'; // 顯示勾勾圖標並更新文本
+                    // 改變按鈕文本為 "已清除"
+                    const button = document.getElementById('clearHistoryBtn');
+                    button.classList.add('cleared');
+                    button.innerHTML = '<i class="fas fa-check"></i> 已清除'; // 顯示勾勾圖標並更新文本
 
-                // 3秒後恢復為原始狀態
-                setTimeout(function() {
-                    button.classList.remove('cleared');
-                    button.innerHTML = '<i class="fas fa-trash"></i> 清除歷史'; // 恢復原狀
-                }, 3000);
+                    // 3秒後恢復為原始狀態
+                    setTimeout(function() {
+                        button.classList.remove('cleared');
+                        button.innerHTML = '<i class="fas fa-trash"></i> 清除歷史'; // 恢復原狀
+                    }, 3000);
+                
             });
         // 輔助函數：格式化日期
         function formatDate(isoString) {
